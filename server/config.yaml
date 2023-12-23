@@ -1,0 +1,47 @@
+app:
+  node: 1
+server:
+  port: 7777
+  allowOrigins:
+    - http://localhost:5173
+    - http://localhost:5173/
+    - http://localhost:5174
+    - http://localhost:5173/
+    - http://127.0.0.1:5173
+    - http://127.0.0.1:5174
+    - http://127.0.0.1:5173/
+    - http://127.0.0.1:5174/
+    - http://0.0.0.0:5173
+    - http://0.0.0.0:5173/
+    - http://0.0.0.0:5174
+    - http://0.0.0.0:5174/
+    - http://localhost:63342
+    - http://localhost:63342/
+  allowMethods:
+    - POST
+    - GET
+    - PUT
+    - OPTIONS
+    - PATCH
+    - DELETE
+    - HEAD
+db:
+  username: postgres
+  password: 123456
+  database: strix
+  port: 5432
+  timezone: Asia/Vientiane
+  host: 127.0.0.1
+  migrate: false
+log:
+  path: ./logging.log
+  level: info
+jwt_key: wSNcBJAvTZ0oZfekXE0tbg
+auth:
+  accessTokenExpireTime: 99999999999
+  refreshTokenExpireTime: 2800000
+bin:
+  serverAddress: 127.0.0.1:9000
+  username: minioadmin
+  password: minioadmin
+  bucket: strix

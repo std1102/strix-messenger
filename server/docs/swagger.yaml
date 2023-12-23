@@ -1,0 +1,9 @@
+basePath: /api/v1
+host: localhost:7777
+info:
+  contact: {}
+  description: Authentication for E2EE messenger
+  title: Strix messenger
+  version: "1.0"
+paths: {}
+swagger: "2.0"

@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+.custom__scroll {
+  overflow: auto;
+}
+
+.custom__scroll::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #505279;
+}
+
+.custom__scroll::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}

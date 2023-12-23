@@ -1,0 +1,53 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <script src="wasm_exec.js"></script>
+    <script>
+        const go = new Go();
+        WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then((result) => {
+            go.run(result.instance);
+        });
+    </script>
+</head>
+<body>
+<div>
+    <label for="inputField">Enter value</label>
+    <input id="inputField" name="PIN" type="text" placeholder="PIN">
+</div>
+<script>
+    var inputField = document.querySelector('#inputField')
+    inputField.onchange = () => {
+        console.log(new Error().stack)
+    }
+    inputField.addEventListener('keyup', function () {
+        console.log((inputField.value))
+        console.log(startUp("1234"))
+        console.log(loadInternalKey("{\"identity_key\":{\"public_hash\":\"L2eVYv6rssbSyAHKgHBv-kTeGX0NoXd9lf8YCS8ZspM\",\"public_key\":\"MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEynI6VfT4b_9S9PrMdp98QPAz5RyAlAPUAT4QMCiswpbOO_JMk_6xUSe6HeEsD-XR6H2jZ2cvTxd5x6J55_58kwXCHzNSxFmVxPnl0FlhbWp5OoYZFNzsOqAYLB373axP\",\"private_key\":\"InacOnS2f6knqsdzwyyuJsOht9DuF9-51frdOhePKMY4rp9QXrjEOiTCurMCJ0EHYjdyPqgW-NXYOeIiJoXzAfwxDvR1NopjIz57VUE6bsS3B6jXDc_z8fBPxOLOSP3sTVBJ4CT-j-eOefYYBDJAyUXRwnictSE_6PHkfZwJSICqNovDm_KArx7CgtxXj5vhNY1MgTZseqLxDz0Su3KWppbn7nKD7PNLbftluMPfOvQbVLGUNDIDdtk6agWSEyk-3zeTLhNiijC1cYy3JjCq6vj9g3gnB_jDha0CPgqhXKSFAc4\",\"private_hash\":\"AK18Cw9f06K_CqgKXP4BR_wbrLLznPkbkuIC1C6b9ss\"},\"pre_key\":{\"public_key\":\"MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEHBSVA9JNqHj0xYVsQ_9YrBWihs1WRC7OMclBR5bwiPwF92H2l9cDO5djKmvvlKy0h8UJDV92JM3WwtYioP-T3SgxfgnITckTabEldwf7bKkacj63T1-n5d2Lg9oSBUdj\",\"private_key\":\"i3pzXbofG-L39_4FWB9UJP5sf4lixWiEEnUkS-DTwh89NjLoTU3LVt6RPcYKohHxZt5rm7u0p6z0xeDOBpuy2ITt2irGpcdmjqX4UqCARl0Pe1t8vK8KunzS8-hLc1EbOJi9qG6FZp9xLcQ-zRGaAkGFZJRyG_Bf60JPCsFcHoAXggnx6SpjIXJbiWVEEM3AIqRmlYylZOqH4ttwuZ6gGRaczuUipgJRW10kQ7bad0DcDde1AAoOrPYRY0PMEO4fhrVsFVigLoYQgtE9c9Dkac31DR_u4bqSmtjjbR-g5URjHe4\",\"private_hash\":\"sp1NivlurlNArWboGIDx8UmiSNQZrtNVGXDJt474fKA\",\"public_hash\":\"rU9w6sHckXm4KGADLFJVAlHuM_TD9bq4MiqLcCfwtxQ\"},\"one_time_key\":{\"43f774f0-98fe-11ee-8685-6bc04d19912c\":{\"public_hash\":\"dkvUx4xdxZApYA9YEMgvrLxJH2i-vh5v8QBpJvnrLd8\",\"public_key\":\"MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEULIfuKRhwcz72gUsuGd3Sk3Pz1uNvUObCpH2Dqqqao845FtzcVYECK8JL7Ym9bUv3dlqXFWwbpNrrbz_Et1MDvYJkgBN7CxBNxz1w4ttGq00AQv83DUdUQWTiAUZgnCt\",\"private_key\":\"Ho_ztePLw6s1xqq9IR0NXrE2Zh4QmHHCNZPXqtgEP9AseCNW441ZdizEBxivjn3DWJBUX47kRX9LxszDAunxx90puilfCyozkYVJjWMpT8yyXsLnoD0wjqX61nwS_63LOXEP4isWa9bunr2MvnLW1MtXJuG4XJS2MEO4xTyGRezvTlOL_CUOMxYewMrdYTGqy87Nc0H0K3RrJK0L-kkKX5itdY9CLUwfU_efDKRGP_Y3qQnKYdqQp7PMcSrO50RimLRIQs9kcm4k8f49W-6yRutOm0OahwEXRfwAP1C4OjaTqQE\",\"private_hash\":\"g4Imh6LMSBdEMh8UtdztPdZe4J6xJ88-yLs8wV3x0bE\"}},\"pin\":\"1234\"}"))
+        console.log(saveInternalKey())
+
+        console.log("_______________________")
+        console.log(populateExternalKeyBundle())
+        // var initilizedRachet = initRatchetFromInternal("{\"ratchetDetail\":{\"total_message_recv\":0,\"missing_message_keys\":null,\"rachet_id\":\"b9f68f50-98ff-11ee-9f0b-f9645683beb2\",\"root_key\":\"4Ah_EDvOD9pm9pjcNWa8J875JO4Atv6W-UkT8cLq6EbI6PNMWTlO4_RubEeJ98Bp-ACunFPgVBhAc7y6wHeSqMNFcn2cSJBf9M5qrQ\",\"chain_send_key\":\"47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFXnVW4AlJf8UvQ6o6J65yR6W57QMFSIZmVbmJG4\",\"chain_recv_key\":\"47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFXS2it-yzaqAd1Typ_TNGUpA57xiO_FBzg-6NlJ\",\"total_message_sent\":0},\"ratchetId\":\"b9f68f50-98ff-11ee-9f0b-f9645683beb2\",\"messages\":[{\"content\":\"\",\"index\":1,\"sender\":\"tien\"},{\"content\":\"\",\"index\":2,\"sender\":\"tien\"},{\"content\":\"\",\"index\":3,\"sender\":\"tien\"},{\"content\":\"\",\"index\":4,\"sender\":\"tien\"}]}")
+        // console.log(initilizedRachet)
+        console.log("_______________________")
+        console.log(regeneratePreKey())
+        console.log(loadRatchet("{\n" +
+            "    \"total_message_recv\": 0,\n" +
+            "    \"missing_message_keys\": null,\n" +
+            "    \"rachet_id\": \"b9f68f50-98ff-11ee-9f0b-f9645683beb2\",\n" +
+            "    \"root_key\": \"4Ah_EDvOD9pm9pjcNWa8J875JO4Atv6W-UkT8cLq6EbI6PNMWTlO4_RubEeJ98Bp-ACunFPgVBhAc7y6wHeSqMNFcn2cSJBf9M5qrQ\",\n" +
+            "    \"chain_send_key\": \"47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFXnVW4AlJf8UvQ6o6J65yR6W57QMFSIZmVbmJG4\",\n" +
+            "    \"chain_recv_key\": \"47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFXS2it-yzaqAd1Typ_TNGUpA57xiO_FBzg-6NlJ\",\n" +
+            "    \"total_message_sent\": 0\n" +
+            "  }"))
+        // var msg = sendMessage("b9f68f50-98ff-11ee-9f0b-f9645683beb2", false, "AAAAAAAA")
+        // console.log(JSON.stringify(msg))
+        console.log(receiveMessage("{\"isBinary\":false,\"chatSessionId\":\"b9f68f50-98ff-11ee-9f0b-f9645683beb2\",\"index\":1,\"cipherMessage\":\"w0q2q7eyu1lbwlw7OIyHL9HVdYGaj1XMaJUQKF4hI4W0mcLB6Mho9JHH_WdDq4RX6iaeDxRgpPerEXREtjh2eZ1pcPg\"}"))
+        // var savedRachet = saveRatchet(initilizedRachet.ratchetId)
+        // var loadedRatchetId = loadRatchet(JSON.stringify(savedRachet))
+        // console.log(loadedRatchetId)
+        // console.log(sendMessage(loadedRatchetId, false, "CON CAC"))
+    });
+</script>
+</body>
+</html>

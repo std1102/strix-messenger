@@ -1,0 +1,45 @@
+version: '3.5'
+
+networks:
+  strix_internal:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_PASSWORD=6jm7sR87mNyNu47F5Gg2PA==
+      - POSTGRES_DB=strix
+    networks:
+      - strix_internal
+    volumes:
+      #Use existing mountpoint
+      - /psdata/strix:/var/lib/postgresql/data
+  minio:
+    image: bitnami/minio:latest
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=8asdgcas%#asdc
+    networks:
+      - strix_internal
+    volumes:
+      - /minio/strix:/data
+  strix-server:
+    image: luyendong1102/strix-message:7ac9617806ca0a7310473e57dc8cdd27de50a3f2
+    volumes:
+      - ./logs:/app
+    ports:
+      - 7777:7777
+    networks:
+      - strix_internal
+    depends_on:
+      - postgres
+      - minio
+

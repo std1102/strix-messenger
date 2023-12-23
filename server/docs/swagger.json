@@ -1,0 +1,12 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Authentication for E2EE messenger",
+        "title": "Strix messenger",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:7777",
+    "basePath": "/api/v1",
+    "paths": {}
+}
