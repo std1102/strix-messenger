@@ -73,6 +73,10 @@ const MessageForm = (props: MessageFormProps) => {
 
     setContent('')
     handleScroll(value)
+
+    // save new ratchet detail
+    const ratchetDetail = await window.saveRatchet(currentRatchetId!)
+    await window.api.changeRatchetDetail(currentConversation!, ratchetDetail)
   }
 
   const handleSendImage = async (e: FormEvent<HTMLInputElement>) => {
@@ -133,6 +137,10 @@ const MessageForm = (props: MessageFormProps) => {
       handleScroll(res.data.filePath)
     }
     reader.readAsArrayBuffer(file)
+
+    // save new ratchet detail
+    const ratchetDetail = await window.saveRatchet(currentRatchetId!)
+    await window.api.changeRatchetDetail(currentConversation!, ratchetDetail)
   }
 
   const handleSendFile = async (e: FormEvent<HTMLInputElement>) => {
@@ -202,6 +210,10 @@ const MessageForm = (props: MessageFormProps) => {
       handleScroll(res.data.filePath)
     }
     reader.readAsArrayBuffer(file)
+
+    // save new ratchet detail
+    const ratchetDetail = await window.saveRatchet(currentRatchetId!)
+    await window.api.changeRatchetDetail(currentConversation!, ratchetDetail)
   }
 
   return (

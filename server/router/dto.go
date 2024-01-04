@@ -22,12 +22,10 @@ type LoginResponseDto struct {
 }
 
 type ExternalKeyBundleDto struct {
-	IdentityKey   string `json:"identityKey,omitempty"`
-	PreKey        string `json:"preKey,omitempty"`
-	PreKeySig     string `json:"preKeySig,omitempty"`
-	OneTimeKeyId  string `json:"oneTimeKeyId,omitempty"`
-	OneTimeKey    string `json:"oneTimeKey,omitempty"`
-	OneTimeKeySig string `json:"oneTimeKeySig,omitempty"`
+	IdentityKey string `json:"identityKey,omitempty"`
+	PreKeyId    string `json:"preKeyId,omitempty"`
+	PreKey      string `json:"preKey,omitempty"`
+	PreKeySig   string `json:"preKeySig,omitempty"`
 }
 
 type UserDto struct {

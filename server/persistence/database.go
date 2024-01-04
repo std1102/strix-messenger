@@ -34,7 +34,7 @@ func migrate() {
 	system.Logger.Info("Creating database")
 	DatabaseContext.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"")
 	_migrate(User{})
-	_migrate(OneTimeKey{})
+	_migrate(PreKeys{})
 	_migrate(Device{})
 	_migrate(ChatSession{})
 	_migrate(PendingMessage{})

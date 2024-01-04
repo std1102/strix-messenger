@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { File, Trash } from 'lucide-react'
+import { File, Trash, X } from 'lucide-react'
 import IMessage from '../interfaces/IMessage'
 import { useEffect, useState } from 'react'
 import useAuthStore from '../stores/useAuthStore'
@@ -30,6 +30,7 @@ const MessageItem = (props: MessageItemProps) => {
   const [filename, setFileName] = useState('')
   const [fileSize, setFileSize] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
+  const [isOpenImage, setIsOpenImage] = useState(false)
 
   const isSender = message.sender === userInfo?.userName
 
@@ -142,12 +143,35 @@ const MessageItem = (props: MessageItemProps) => {
                 </p>
               )}
               {message.type === IMAGE_TYPE && content && (
-                <img
-                  alt={'loading'}
-                  key={content}
-                  src={content}
-                  className="object-cover max-w-[100px]"
-                />
+                <>
+                  <img
+                    alt={'loading'}
+                    key={content}
+                    src={content}
+                    className="object-cover max-w-[100px] cursor-pointer"
+                    onClick={() => setIsOpenImage(true)}
+                  />
+                  {isOpenImage && (
+                    <div className="absolute inset-0 w-full h-full">
+                      <div
+                        className="absolute inset-0 bg-black/50 cursor-pointer"
+                        onClick={() => setIsOpenImage(false)}
+                      ></div>
+                      <span
+                        className="absolute cursor-pointer top-6 rounded-full bg-white w-10 h-10 flex items-center justify-center right-10"
+                        onClick={() => setIsOpenImage(false)}
+                      >
+                        <X className="text-black" />
+                      </span>
+                      <img
+                        alt={'loading'}
+                        key={content}
+                        src={content}
+                        className="object-cover max-h-[90%] max-w-[80%] absolute inset-1/2 -translate-y-1/2 -translate-x-1/2 z-50"
+                      />
+                    </div>
+                  )}
+                </>
               )}
               {message.type === VIDEO_TYPE && content && (
                 <video

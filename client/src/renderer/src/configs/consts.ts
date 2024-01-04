@@ -1,8 +1,8 @@
-export const API_URL = 'http://192.168.1.77:7777'
+export const API_URL = 'http://localhost:7777'
 export const IMAGE_URL = API_URL + '/api/v1/file/get?fileId='
-export const SOCKET_URL = 'ws://192.168.1.77:7777'
+export const SOCKET_URL = 'ws://localhost:7777'
 export const WS_CALL_URL =
-  'ws://192.168.1.77:7777/voip?voipSession={{voipToken}}&connType={{connType}}'
+  'ws://localhost:7777/voip?voipSession={{voipToken}}&connType={{connType}}'
 
 export const ACCESS_TOKEN_KEY = 'access_token'
 

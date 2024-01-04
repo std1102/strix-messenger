@@ -2,6 +2,7 @@ package test
 
 import (
 	"encoding/json"
+	"fmt"
 	"lidx-core-lib/common"
 	"lidx-core-lib/keys"
 	"lidx-core-lib/ratchet"
@@ -14,6 +15,8 @@ func TestProtocol(t *testing.T) {
 
 	aExternalKeyBundle := aKey.GenerateExternalKey()
 	bExternalKeyBundle := bKey.GenerateExternalKey()
+
+	fmt.Print(aExternalKeyBundle)
 
 	aKey.GenerateEphemeralKey()
 

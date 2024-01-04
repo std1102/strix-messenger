@@ -49,10 +49,8 @@ func register(context *gin.Context) {
 		Email:             dto.Email,
 		Avatar:            nil,
 		IdentityKey:       "",
-		PreKey:            "",
-		PreKeySignature:   "",
 		PreKeyCreatedTime: nil,
-		OneTimePreKeys:    nil,
+		PreKeys:           nil,
 		Devices:           nil,
 		CreatedAt:         time.Now(),
 	}

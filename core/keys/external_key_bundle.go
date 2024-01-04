@@ -8,23 +8,21 @@ import (
 )
 
 type ExternalKeyBundle struct {
-	IdentityKey   ecc.IECPublicKey
-	EphemeralKey  ecc.IECPublicKey
-	PreKey        ecc.IECPublicKey
-	PreKeySig     []byte
-	OneTimeKeyId  string
-	OneTimeKey    ecc.IECPublicKey
-	OneTimeKeySig []byte
+	IdentityKey  ecc.IECPublicKey
+	EphemeralKey ecc.IECPublicKey
+	PreKeyId     string
+	PreKey       ecc.IECPublicKey
+	PreKeySig    []byte
 }
 
 // Encode in base64
 type ExternalKeyBundleDto struct {
 	IdentityKey   string `json:"identityKey,omitempty"`
-	PreKey        string `json:"preKey,omitempty"`
-	PreKeySig     string `json:"preKeySig,omitempty"`
-	OneTimeKeyId  string `json:"oneTimeKeyId,omitempty"`
 	OneTimeKey    string `json:"oneTimeKey,omitempty"`
 	OneTimeKeySig string `json:"oneTimeKeySig,omitempty"`
+	PreKeyId      string `json:"preKeyId,omitempty"`
+	PreKey        string `json:"preKey,omitempty"`
+	PreKeySig     string `json:"preKeySig,omitempty"`
 }
 
 // TODO convert base64 string to key material
@@ -41,20 +39,16 @@ func ExternalKeyFromJson(jsonString string) *ExternalKeyBundle {
 func NewExternalKeyBundle(
 	ik ecc.IECPublicKey,
 	ek ecc.IECPublicKey,
+	pkid string,
 	pk ecc.IECPublicKey,
 	spk []byte,
-	okid string,
-	ok ecc.IECPublicKey,
-	sok []byte,
 ) *ExternalKeyBundle {
 	return &ExternalKeyBundle{
-		IdentityKey:   ik,
-		EphemeralKey:  ek,
-		PreKey:        pk,
-		PreKeySig:     spk,
-		OneTimeKeyId:  okid,
-		OneTimeKey:    ok,
-		OneTimeKeySig: sok,
+		IdentityKey:  ik,
+		EphemeralKey: ek,
+		PreKeyId:     pkid,
+		PreKey:       pk,
+		PreKeySig:    spk,
 	}
 }
 
@@ -69,19 +63,14 @@ func NewExternalKeyFromJson(jsonString string) (*ExternalKeyBundle, error) {
 	pKey, _ := ecc.DeserializePublicKey(common.DecodeToByte(dto.PreKey))
 	result := &ExternalKeyBundle{
 		IdentityKey: iKey,
+		PreKeyId:    dto.PreKeyId,
 		PreKey:      pKey,
 		PreKeySig:   common.DecodeToByte(dto.PreKeySig),
-	}
-	if dto.OneTimeKey != "" && dto.OneTimeKeySig != "" && dto.OneTimeKeyId != "" {
-		oKey, _ := ecc.DeserializePublicKey(common.DecodeToByte(dto.OneTimeKey))
-		result.OneTimeKeyId = dto.OneTimeKeyId
-		result.OneTimeKey = oKey
-		result.OneTimeKeySig = common.DecodeToByte(dto.OneTimeKeySig)
 	}
 	return result, nil
 }
 
-func (keyBundle *ExternalKeyBundle) GetIndentityKey() ecc.IECPublicKey {
+func (keyBundle *ExternalKeyBundle) GetIdentityKey() ecc.IECPublicKey {
 	return keyBundle.IdentityKey
 }
 
@@ -89,12 +78,8 @@ func (keyBundle *ExternalKeyBundle) GetEphemeralKey() ecc.IECPublicKey {
 	return keyBundle.EphemeralKey
 }
 
-func (keyBundle *ExternalKeyBundle) GetPreKey() ecc.IECPublicKey {
-	return keyBundle.PreKey
-}
-
-func (keyBundle *ExternalKeyBundle) GetOneTimePreKey() (ecc.IECPublicKey, string) {
-	return keyBundle.OneTimeKey, keyBundle.OneTimeKeyId
+func (keyBundle *ExternalKeyBundle) GetPreKey() (ecc.IECPublicKey, string) {
+	return keyBundle.PreKey, keyBundle.PreKeyId
 }
 
 func (keyBundle *ExternalKeyBundle) SetEphemeralKey(ePubKey *ecc.IECPublicKey) {
@@ -102,7 +87,7 @@ func (keyBundle *ExternalKeyBundle) SetEphemeralKey(ePubKey *ecc.IECPublicKey) {
 }
 
 func (keyBundle *ExternalKeyBundle) Verify() bool {
-	userIdentityKey := keyBundle.GetIndentityKey()
+	userIdentityKey := keyBundle.GetIdentityKey()
 	if userIdentityKey == nil {
 		fmt.Println("Cannot get user identity key")
 		return false
@@ -113,9 +98,9 @@ func (keyBundle *ExternalKeyBundle) Verify() bool {
 		fmt.Println("Cannot verify user pre key")
 		return false
 	}
-	if keyBundle.OneTimeKey != nil && !common.IsByteArrayEmpty(&keyBundle.OneTimeKeySig) {
-		oKey, _ := keyBundle.OneTimeKey.Serialize()
-		if !signer.Verify(oKey, keyBundle.OneTimeKeySig) {
+	if keyBundle.PreKey != nil && !common.IsByteArrayEmpty(&keyBundle.PreKeySig) {
+		oKey, _ := keyBundle.PreKey.Serialize()
+		if !signer.Verify(oKey, keyBundle.PreKeySig) {
 			fmt.Println("Cannot verify user one-time key")
 			return false
 		}
@@ -124,28 +109,25 @@ func (keyBundle *ExternalKeyBundle) Verify() bool {
 }
 
 func (keyBundle *ExternalKeyBundle) ToDto() *ExternalKeyBundleDto {
-	var oid, ok, oks string
-	if keyBundle.OneTimeKey != nil && keyBundle.OneTimeKeySig != nil && keyBundle.OneTimeKeyId != "" {
-		oid = keyBundle.OneTimeKeyId
-		okResult, _ := keyBundle.OneTimeKey.Serialize()
-		ok = common.EncodeToString(okResult)
-		oks = common.EncodeToString(keyBundle.OneTimeKeySig)
+	var pid, pk, pks string
+	if keyBundle.PreKey != nil && keyBundle.PreKeySig != nil && keyBundle.PreKeyId != "" {
+		pid = keyBundle.PreKeyId
+		okResult, _ := keyBundle.PreKey.Serialize()
+		pk = common.EncodeToString(okResult)
+		pks = common.EncodeToString(keyBundle.PreKeySig)
 	} else {
-		oid = ""
-		ok = ""
-		oks = ""
+		pid = ""
+		pk = ""
+		pks = ""
 	}
 
 	iKey, _ := keyBundle.IdentityKey.Serialize()
-	pKey, _ := keyBundle.PreKey.Serialize()
 
 	dto := &ExternalKeyBundleDto{
-		IdentityKey:   common.EncodeToString(iKey),
-		PreKey:        common.EncodeToString(pKey),
-		PreKeySig:     common.EncodeToString(keyBundle.PreKeySig),
-		OneTimeKeyId:  oid,
-		OneTimeKey:    ok,
-		OneTimeKeySig: oks,
+		IdentityKey: common.EncodeToString(iKey),
+		PreKeyId:    pid,
+		PreKey:      pk,
+		PreKeySig:   pks,
 	}
 	return dto
 }

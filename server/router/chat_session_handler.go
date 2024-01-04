@@ -61,8 +61,8 @@ func initChatSession(context *gin.Context) {
 	otherConn, existed := CURRENT_USER_ACTIVE.Get(otherUser.ID.String())
 	if existed && otherConn != nil {
 		helloMessage := fmt.Sprintf("User %s want to chat with you", currentUser.Username)
-		var lastedOneTimeKey persistence.OneTimeKey
-		for _, element := range currentUser.OneTimePreKeys {
+		var lastedOneTimeKey persistence.PreKeys
+		for _, element := range currentUser.PreKeys {
 			lastedOneTimeKey = *element
 		}
 		msg := MessageDto{
@@ -79,12 +79,10 @@ func initChatSession(context *gin.Context) {
 				ReceiverUserName: currentUser.Username,
 				SenderUserName:   otherUser.Username,
 				SenderKeyBundle: ExternalKeyBundleDto{
-					IdentityKey:   currentUser.IdentityKey,
-					PreKey:        currentUser.PreKey,
-					PreKeySig:     currentUser.PreKeySignature,
-					OneTimeKeyId:  lastedOneTimeKey.ID.String(),
-					OneTimeKey:    lastedOneTimeKey.Key,
-					OneTimeKeySig: lastedOneTimeKey.KeySignature,
+					IdentityKey: currentUser.IdentityKey,
+					PreKeyId:    lastedOneTimeKey.ID.String(),
+					PreKey:      lastedOneTimeKey.Key,
+					PreKeySig:   lastedOneTimeKey.KeySignature,
 				},
 			},
 		}
@@ -126,8 +124,8 @@ func retrieveChatSession(context *gin.Context) {
 		currentChatSession := chatSessionList[i]
 		sender := currentChatSession.Sender
 		reciever := currentChatSession.Receiver
-		var lastedOneTimeKey persistence.OneTimeKey
-		for _, element := range sender.OneTimePreKeys {
+		var lastedOneTimeKey persistence.PreKeys
+		for _, element := range sender.PreKeys {
 			lastedOneTimeKey = *element
 		}
 		result = append(result, ChatSessionDto{
@@ -136,12 +134,10 @@ func retrieveChatSession(context *gin.Context) {
 			ReceiverUserName: reciever.Username,
 			SenderUserName:   sender.Username,
 			SenderKeyBundle: ExternalKeyBundleDto{
-				IdentityKey:   sender.IdentityKey,
-				PreKey:        sender.PreKey,
-				PreKeySig:     sender.PreKeySignature,
-				OneTimeKeyId:  lastedOneTimeKey.ID.String(),
-				OneTimeKey:    lastedOneTimeKey.Key,
-				OneTimeKeySig: lastedOneTimeKey.KeySignature,
+				IdentityKey: sender.IdentityKey,
+				PreKeyId:    lastedOneTimeKey.ID.String(),
+				PreKey:      lastedOneTimeKey.Key,
+				PreKeySig:   lastedOneTimeKey.KeySignature,
 			},
 		})
 	}

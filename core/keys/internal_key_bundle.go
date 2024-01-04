@@ -10,14 +10,13 @@ import (
 type InternalKeyBundle struct {
 	IdentityKey  *ecc.ECKeyPair
 	EphemeralKey *ecc.ECKeyPair
-	PreKey       *ecc.ECKeyPair
-	OneTimeKey   map[string]*ecc.ECKeyPair
+	OneTimeKey   *ecc.ECKeyPair
+	PreKeys      map[string]*ecc.ECKeyPair
 }
 
 type InternalKeyBundleStore struct {
 	IdentityKey *ecc.ECKeyPairStore            `json:"identity_key"`
-	PreKey      *ecc.ECKeyPairStore            `json:"pre_key"`
-	OneTimeKey  map[string]*ecc.ECKeyPairStore `json:"one_time_key"`
+	PreKeys     map[string]*ecc.ECKeyPairStore `json:"pre_keys"`
 }
 
 func LoadInternalKey(keyJsonString string, PIN []byte) *InternalKeyBundle {
@@ -28,16 +27,14 @@ func LoadInternalKey(keyJsonString string, PIN []byte) *InternalKeyBundle {
 		return nil
 	}
 	identityKey, _ := ecc.DeSerializeKey(internalBundleStore.IdentityKey, PIN)
-	preKey, _ := ecc.DeSerializeKey(internalBundleStore.PreKey, PIN)
-	oneTimeKeyMap := make(map[string]*ecc.ECKeyPair)
-	for k, v := range internalBundleStore.OneTimeKey {
+	preKeyMap := make(map[string]*ecc.ECKeyPair)
+	for k, v := range internalBundleStore.PreKeys {
 		dKey, _ := ecc.DeSerializeKey(v, PIN)
-		oneTimeKeyMap[k] = dKey
+		preKeyMap[k] = dKey
 	}
 	return &InternalKeyBundle{
 		IdentityKey: identityKey,
-		PreKey:      preKey,
-		OneTimeKey:  oneTimeKeyMap,
+		PreKeys:     preKeyMap,
 	}
 }
 
@@ -48,22 +45,20 @@ func NewInternalKeyBundle() *InternalKeyBundle {
 	return &InternalKeyBundle{
 		IdentityKey:  ecc.GenerateKeyPair(),
 		EphemeralKey: ecc.GenerateKeyPair(),
-		PreKey:       ecc.GenerateKeyPair(),
-		OneTimeKey:   oneTimeKeys,
+		OneTimeKey:   ecc.GenerateKeyPair(),
+		PreKeys:      oneTimeKeys,
 	}
 }
 
 func (internalKey *InternalKeyBundle) Save(PIN []byte) *InternalKeyBundleStore {
 	identityKey := internalKey.IdentityKey.Save(PIN)
-	preKey := internalKey.PreKey.Save(PIN)
 	oneTimeKeyMap := make(map[string]*ecc.ECKeyPairStore)
-	for k, v := range internalKey.OneTimeKey {
+	for k, v := range internalKey.PreKeys {
 		oneTimeKeyMap[k] = v.Save(PIN)
 	}
 	return &InternalKeyBundleStore{
 		IdentityKey: identityKey,
-		PreKey:      preKey,
-		OneTimeKey:  oneTimeKeyMap,
+		PreKeys:     oneTimeKeyMap,
 	}
 }
 
@@ -73,39 +68,31 @@ func (internalKey *InternalKeyBundle) GenerateEphemeralKey() ecc.ECKeyPair {
 }
 
 func (internalKey *InternalKeyBundle) GeneratePreKey() ecc.ECKeyPair {
-	internalKey.PreKey = ecc.GenerateKeyPair()
-	return *internalKey.PreKey
+	internalKey.OneTimeKey = ecc.GenerateKeyPair()
+	return *internalKey.OneTimeKey
 }
 
 func (internalKey *InternalKeyBundle) GenerateExternalKey() *ExternalKeyBundle {
 	yIk := internalKey.IdentityKey
-	yPk := internalKey.PreKey
-
 	singer := ecc.FromKeyPair(yIk)
 
-	yPkR, _ := yPk.PublicKey().Serialize()
+	var pk *ecc.ECKeyPair
+	var pkId string
 
-	bspk, _ := singer.Sign(yPkR)
-
-	var iOKey *ecc.ECKeyPair
-	var oKeyId string
-
-	for k, v := range internalKey.OneTimeKey {
-		oKeyId = k
-		iOKey = v
+	for k, v := range internalKey.PreKeys {
+		pkId = k
+		pk = v
 	}
 
-	iOkR, _ := iOKey.PublicKey().Serialize()
+	pkPublic, _ := pk.PublicKey().Serialize()
 
-	okeySig, _ := singer.Sign(iOkR)
+	pkSig, _ := singer.Sign(pkPublic)
 
 	return NewExternalKeyBundle(
 		yIk.PublicKey(),
 		nil,
-		yPk.PublicKey(),
-		bspk,
-		oKeyId,
-		iOKey.PublicKey(),
-		okeySig,
+		pkId,
+		pk.PublicKey(),
+		pkSig,
 	)
 }

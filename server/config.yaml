@@ -32,7 +32,7 @@ db:
   port: 5432
   timezone: Asia/Vientiane
   host: 127.0.0.1
-  migrate: false
+  migrate: true
 log:
   path: ./logging.log
   level: info

@@ -16,7 +16,7 @@ type DataSource interface {
 func GetPageable(page *common.Pageable, context *gorm.DB, bindValues any) error {
 	getPageable(page)
 	return context.
-		Preload("OneTimePreKeys").
+		Preload("PreKeys").
 		Limit(int(page.PageSize)).
 		Offset(int(page.PageSize * page.PageNumber)).
 		Find(bindValues).Error

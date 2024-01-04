@@ -31,6 +31,7 @@ func retrievePendingMessage(context *gin.Context) {
 			SenderUsername: currentMsg.SenderUsername,
 			PlainMessage:   currentMsg.PlainMessage,
 			ChatSessionId:  currentMsg.ChatSessionId.String(),
+			FilePath:       currentMsg.FilePath,
 			Index:          currentMsg.Index,
 			CipherMessage:  currentMsg.CipherMessage,
 			IsBinary:       currentMsg.IsBinary,

@@ -18,8 +18,6 @@ func uploadKey(context *gin.Context) {
 	}
 	user := getLoggedInUser(context)
 	user.IdentityKey = externalKeyBundle.IdentityKey
-	user.PreKey = externalKeyBundle.PreKey
-	user.PreKeySignature = externalKeyBundle.PreKeySig
 
 	userRepository := repository.NewUserRepository(persistence.DatabaseContext)
 	err = userRepository.Save(user)
@@ -28,12 +26,12 @@ func uploadKey(context *gin.Context) {
 		return
 	}
 
-	if externalKeyBundle.OneTimeKeyId != "" {
-		userOneTimeKey := persistence.OneTimeKey{
-			ID:           common.GetUUIDFromString(externalKeyBundle.OneTimeKeyId),
+	if externalKeyBundle.PreKeyId != "" {
+		userOneTimeKey := persistence.PreKeys{
+			ID:           common.GetUUIDFromString(externalKeyBundle.PreKeyId),
 			UserId:       user.ID,
-			Key:          externalKeyBundle.OneTimeKey,
-			KeySignature: externalKeyBundle.OneTimeKeySig,
+			Key:          externalKeyBundle.PreKey,
+			KeySignature: externalKeyBundle.PreKeySig,
 			CreatedAt:    time.Now(),
 			Owner:        user,
 		}
@@ -66,18 +64,16 @@ func getExternalKeyBundle(context *gin.Context) {
 		return
 	}
 
-	var lastedOneTimeKey persistence.OneTimeKey
-	for _, element := range otherUser.OneTimePreKeys {
+	var lastedOneTimeKey persistence.PreKeys
+	for _, element := range otherUser.PreKeys {
 		lastedOneTimeKey = *element
 	}
 
 	result := ExternalKeyBundleDto{
-		IdentityKey:   otherUser.IdentityKey,
-		PreKey:        otherUser.PreKey,
-		PreKeySig:     otherUser.PreKeySignature,
-		OneTimeKeyId:  lastedOneTimeKey.ID.String(),
-		OneTimeKey:    lastedOneTimeKey.Key,
-		OneTimeKeySig: lastedOneTimeKey.KeySignature,
+		IdentityKey: otherUser.IdentityKey,
+		PreKeyId:    lastedOneTimeKey.ID.String(),
+		PreKey:      lastedOneTimeKey.Key,
+		PreKeySig:   lastedOneTimeKey.KeySignature,
 	}
 
 	context.JSON(200, result)

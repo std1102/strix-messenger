@@ -15,7 +15,7 @@ func NewOneTimeKeyRepository(context *gorm.DB) (u *OneTimeKeyRepository) {
 	}
 }
 
-func (u *OneTimeKeyRepository) Save(target *persistence.OneTimeKey) error {
+func (u *OneTimeKeyRepository) Save(target *persistence.PreKeys) error {
 	return u.DbContext.Transaction(func(context *gorm.DB) error {
 		err := u.DbContext.Save(target).Error
 		return err

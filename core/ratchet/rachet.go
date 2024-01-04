@@ -148,23 +148,26 @@ func (r *Ratchet) InitNewSession() {
 	}
 	// Performance X3DH
 	ikA := r.MyKeyBundle.IdentityKey.PrivateKey()
-	pkB := r.YourKeyBundle.GetPreKey()
+	pkB, _ := r.YourKeyBundle.GetPreKey()
 	dh1, _ := ikA.CalculateCommonSecret(pkB)
 
 	ekA := r.MyKeyBundle.EphemeralKey.PrivateKey()
-	ikB := r.YourKeyBundle.GetIndentityKey()
+	ikB := r.YourKeyBundle.GetIdentityKey()
 	dh2, _ := ekA.CalculateCommonSecret(ikB)
 
 	dh3, _ := ekA.CalculateCommonSecret(pkB)
 
 	var preKdf []byte
-	opkB, _ := r.YourKeyBundle.GetOneTimePreKey()
+
+	/*opkB, _ := r.YourKeyBundle.GetPreKey()
 	if opkB != nil {
 		dh4, _ := ekA.CalculateCommonSecret(opkB)
 		preKdf = common.ConcatBytes(dh1, dh2, dh3, dh4)
 	} else {
 		preKdf = common.ConcatBytes(dh1, dh2, dh3)
-	}
+	}*/
+
+	preKdf = common.ConcatBytes(dh1, dh2, dh3)
 
 	rootKey, e := kdf.DoKDF(preKdf)
 	if e != nil {
@@ -181,8 +184,13 @@ func (r *Ratchet) InitRecievedSession(ephemeralKey ecc.IECPublicKey) {
 		return
 	}
 	// Performance X3DH
-	pkA := r.MyKeyBundle.PreKey.PrivateKey()
-	ikB := r.YourKeyBundle.GetIndentityKey()
+	var aPreKeyPair *ecc.ECKeyPair
+	aPreKeyPair = nil
+	for _, v := range r.MyKeyBundle.PreKeys {
+		aPreKeyPair = v
+	}
+	pkA := aPreKeyPair.PrivateKey()
+	ikB := r.YourKeyBundle.GetIdentityKey()
 	dh1, _ := pkA.CalculateCommonSecret(ikB)
 
 	ikA := r.MyKeyBundle.IdentityKey.PrivateKey()
@@ -192,12 +200,12 @@ func (r *Ratchet) InitRecievedSession(ephemeralKey ecc.IECPublicKey) {
 	dh3, _ := pkA.CalculateCommonSecret(ekB)
 
 	var preKdf []byte
-	preKdf = common.ConcatBytes(dh1, dh2, dh3)
-	_, opkId := r.YourKeyBundle.GetOneTimePreKey()
-	if !common.IsStringEmpty(&opkId) {
+
+	/*_, pkId := r.YourKeyBundle.GetPreKey()
+	if !common.IsStringEmpty(&pkId) {
 		var opkA *ecc.ECKeyPair
 		opkA = nil
-		for _, v := range r.MyKeyBundle.OneTimeKey {
+		for _, v := range r.MyKeyBundle.PreKeys {
 			opkA = v
 		}
 		if opkA != nil {
@@ -206,7 +214,9 @@ func (r *Ratchet) InitRecievedSession(ephemeralKey ecc.IECPublicKey) {
 		}
 	} else {
 		preKdf = common.ConcatBytes(dh1, dh2, dh3)
-	}
+	}*/
+
+	preKdf = common.ConcatBytes(dh1, dh2, dh3)
 
 	rootKey, e := kdf.DoKDF(preKdf)
 	if e != nil {
@@ -219,15 +229,15 @@ func (r *Ratchet) InitRecievedSession(ephemeralKey ecc.IECPublicKey) {
 
 func (r *Ratchet) OnSend(message *Message) {
 	message.RatchetID = r.RatchetId
-	var encyptedKey []byte
+	var encryptedKey []byte
 	if r.TotalMessageSent == 0 {
-		encyptedKey, _ = kdf.DoKDF(r.RootKey)
+		encryptedKey, _ = kdf.DoKDF(r.RootKey)
 	} else {
-		encyptedKey, _ = kdf.DoKDF(r.ChainSendKey)
+		encryptedKey, _ = kdf.DoKDF(r.ChainSendKey)
 	}
-	message.Encrypt(encyptedKey)
+	message.Encrypt(encryptedKey)
 	r.TotalMessageSent++
-	r.ChainSendKey = encyptedKey
+	r.ChainSendKey = encryptedKey
 	message.Index = r.TotalMessageSent
 }
 

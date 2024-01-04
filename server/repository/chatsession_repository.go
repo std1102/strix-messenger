@@ -31,7 +31,7 @@ func (u *ChatSessionRepositoryPostgres) FindBySenderAndReciever(senderID string,
 
 func (u *ChatSessionRepositoryPostgres) FindAllPending(userId string, target *[]persistence.ChatSession) error {
 	userid := common.GetUUIDFromString(userId)
-	err := u.DbContext.Preload("Sender").Preload("Receiver").Preload("Sender.OneTimePreKeys").Preload("Receiver.OneTimePreKeys").
+	err := u.DbContext.Preload("Sender").Preload("Receiver").Preload("Sender.PreKeys").Preload("Receiver.PreKeys").
 		Where("receiver_id = ?", &userid).
 		Where("is_initialized = ?", false).
 		Find(target).

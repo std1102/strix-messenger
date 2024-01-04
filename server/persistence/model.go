@@ -6,22 +6,20 @@ import (
 )
 
 type User struct {
-	ID                uuid.UUID     `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
-	Username          string        `gorm:"type:varchar(255);not null;unique"`
-	Password          string        `gorm:"type:varchar(255);not null"`
-	AliasName         string        `gorm:"type:varchar(255)"`
-	Email             string        `gorm:"type:varchar(255)"`
-	Avatar            *string       `gorm:"type:varchar(500)"`
-	IdentityKey       string        `gorm:"type:varchar(255)"`
-	PreKey            string        `gorm:"type:varchar(255)"`
-	PreKeySignature   string        `gorm:"type:varchar(255)"`
-	PreKeyCreatedTime *time.Time    `gorm:"type:time"`
-	OneTimePreKeys    []*OneTimeKey `gorm:"foreignKey:UserId"`
-	Devices           []*Device     `gorm:"foreignKey:UserId"`
-	CreatedAt         time.Time     `gorm:"type:time;default:current_timestamp;not null"`
+	ID                uuid.UUID  `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
+	Username          string     `gorm:"type:varchar(255);not null;unique"`
+	Password          string     `gorm:"type:varchar(255);not null"`
+	AliasName         string     `gorm:"type:varchar(255)"`
+	Email             string     `gorm:"type:varchar(255)"`
+	Avatar            *string    `gorm:"type:varchar(500)"`
+	IdentityKey       string     `gorm:"type:varchar(255)"`
+	PreKeyCreatedTime *time.Time `gorm:"type:time"`
+	PreKeys           []*PreKeys `gorm:"foreignKey:UserId"`
+	Devices           []*Device  `gorm:"foreignKey:UserId"`
+	CreatedAt         time.Time  `gorm:"type:time;default:current_timestamp;not null"`
 }
 
-type OneTimeKey struct {
+type PreKeys struct {
 	ID           uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
 	UserId       uuid.UUID `gorm:"type:uuid"`
 	Key          string    `gorm:"type:varchar(255);not null"`
@@ -63,6 +61,7 @@ type PendingMessage struct {
 	ChatSessionId  uuid.UUID    `gorm:"type:uuid"`
 	CipherMessage  string       `gorm:"type:text"`
 	PlainMessage   *string      `gorm:"type:text"`
+	FilePath       *string      `gorm:"type:text"`
 	IsBinary       bool         `gorm:"default:false"`
 	IsRead         bool         `gorm:"default:false"`
 	Owner          *User        `gorm:"foreignKey:OwnerId"`

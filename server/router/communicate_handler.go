@@ -355,6 +355,7 @@ func savePendingMessage(msg *MessageDto, fromSender bool, chatSession *persisten
 		ChatSessionId:  chatSession.ID,
 		CipherMessage:  msg.CipherMessage,
 		PlainMessage:   msg.PlainMessage,
+		FilePath:       msg.FilePath,
 		IsBinary:       msg.IsBinary,
 		IsRead:         false,
 		Owner:          owner,
