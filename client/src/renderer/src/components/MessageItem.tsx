@@ -74,7 +74,7 @@ const MessageItem = (props: MessageItemProps) => {
 
   useEffect(() => {
     if (message.type !== TEXT_TYPE && message.filePath) {
-      ;(async function () {
+      ;(async function() {
         console.log(message)
         const [randomKey, filePath, , filename, fileSize] = message.filePath!.split(':')
         const res = await uploadRepository.downloadFile(filePath!)
@@ -99,7 +99,8 @@ const MessageItem = (props: MessageItemProps) => {
     >
       {isOpen && (
         <div className="absolute inset-0 z-50">
-          <div className="relative border w-96 z-20 bg-white py-4 px-8 rounded-lg overflow-hidden top-36 left-1/2 -translate-x-1/2 shadow-2xl">
+          <div
+            className="relative border w-96 z-20 bg-white py-4 px-8 rounded-lg overflow-hidden top-36 left-1/2 -translate-x-1/2 shadow-2xl">
             <h4 className="font-medium">Bạn có chắc chắn muốn xóa tin nhắn này?</h4>
             <div className="flex justify-center gap-x-4 mt-4">
               <button
@@ -136,7 +137,7 @@ const MessageItem = (props: MessageItemProps) => {
                   className={clsx(
                     'text-xs ',
                     messageSearches.includes(message.index!.toString()) &&
-                      'bg-yellow-200/80 text-black'
+                    'bg-yellow-200/80 text-black'
                   )}
                 >
                   {content}

@@ -110,7 +110,8 @@ const ReceivingCallModal = () => {
             setStatus('idle')
           }}
         ></span>
-        <div className="relative w-80 z-20 bg-white py-4 px-8 rounded-lg overflow-hidden top-36 left-1/2 -translate-x-1/2">
+        <div
+          className="relative w-80 z-20 bg-white py-4 px-8 rounded-lg overflow-hidden top-36 left-1/2 -translate-x-1/2">
           <div className="flex justify-center mb-3">
             <img className="w-14 rounded-full h-14" src={AVATAR_DEFAULT} />
           </div>

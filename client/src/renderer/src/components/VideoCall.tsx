@@ -57,7 +57,7 @@ const VideoCall = () => {
       audio: enableAudio,
       video: enableVideo
     })
-      .then(function (vidStream) {
+      .then(function(vidStream) {
         if (localRecorder == null) {
           localRecorder = new MediaRecorder(vidStream, {
             mimeType
@@ -89,12 +89,12 @@ const VideoCall = () => {
         if (video != null) {
           video.muted = true
           video.srcObject = vidStream
-          video.onloadedmetadata = function () {
+          video.onloadedmetadata = function() {
             video.play()
           }
         }
       })
-      .catch(function (e) {
+      .catch(function(e) {
         console.log(e.name + ': ' + e.message)
       })
 
@@ -141,8 +141,8 @@ const VideoCall = () => {
                 if (
                   remoteVideoRef.current.buffered.length &&
                   remoteVideoRef.current.buffered.end(0) -
-                    remoteVideoRef.current.buffered.start(0) >
-                    400
+                  remoteVideoRef.current.buffered.start(0) >
+                  400
                 ) {
                   remoteSrcBuffer.remove(0, remoteVideoRef.current.buffered.end(0) - 400)
                 }
@@ -204,7 +204,8 @@ const VideoCall = () => {
             className="w-20 h-20 rounded-full object-cover"
           />
         )}
-        <div className="group-hover:opacity-100 absolute right-0 px-2 inset-y-0 flex items-center bg-transparent hover:bg-black/10 duration-300 opacity-0 cursor-pointer">
+        <div
+          className="group-hover:opacity-100 absolute right-0 px-2 inset-y-0 flex items-center bg-transparent hover:bg-black/10 duration-300 opacity-0 cursor-pointer">
           <ChevronRight className="text-white" onClick={() => setIsHiddenLocalStream(true)} />
         </div>
       </div>

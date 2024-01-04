@@ -40,7 +40,8 @@ const ChangeAvatarModal = (props: ChangeAvatarModalProps) => {
   return (
     <div className="fixed inset-0 z-20">
       <div className="absolute inset-0 bg-black/30" onClick={() => setIsOpen(false)}></div>
-      <div className="w-[500px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-8 h-[400px] bg-white rounded-lg flex items-center flex-col">
+      <div
+        className="w-[500px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-8 h-[400px] bg-white rounded-lg flex items-center flex-col">
         <div className="relative group">
           <input ref={inputRef} type="file" hidden onChange={handlePreviewAvatar} />
           <span
